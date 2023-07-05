@@ -9,10 +9,22 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.8",
+    "@react-navigation/native": "^6.1.7",
     "expo": "~48.0.18",
+    "expo-location": "~15.1.1",
     "expo-status-bar": "~1.4.4",
+    "formik": "^2.4.2",
+    "radio-button-react-native": "^1.1.6",
+    "radio-buttons-react-native": "^1.0.4",
     "react": "18.2.0",
-    "react-native": "0.71.8"
+    "react-column-grid": "^2.1.2",
+    "react-native": "0.71.8",
+    "react-native-dropdown-select-list": "^2.0.4",
+    "react-native-elements": "^3.4.3",
+    "react-native-maps": "^1.7.1",
+    "react-native-radio-buttonx": "^1.0.1",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
