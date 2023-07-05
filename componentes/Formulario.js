@@ -8,6 +8,8 @@ import * as Yup from 'yup';
 
 const Formulario = () => {
 
+    const server = 'http://192.168.3.11:8000/';
+
     const validationSchema = Yup.object().shape({
         nombre: Yup.string().required('El nombre es obligatorio'),
         celular: Yup.string().required('El número de celular es obligatorio'),
@@ -66,16 +68,25 @@ const Formulario = () => {
     };
 
     const handleSubmit = async (values) => {
+        (selectedOption == 'Nivel 1') ? values.nivel = '1' : ((selectedOption == 'Nivel 2') ? values.nivel = '2' : ((selectedOption == 'Nivel 3') ? values.nivel = '3' : ''))
+        values.usuario = 1;
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(values);
+
         var requestOptions = {
-            method: 'GET',
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
             redirect: 'follow'
-          };
-          
-          fetch("http://localhost:8000/", requestOptions)
+        };
+
+        fetch(server + "registrar_novedad", requestOptions)
             .then(response => response.text())
             .then(result => console.log(result))
-            .catch(error => console.log('error', error));
-      };
+            .catch(error => console.log('error: ', error));
+    };
     return (
         <Formik
             initialValues={{ nombre: '', celular: '', correo: '', direccion: '', novedad: '', nivel: '' }}
