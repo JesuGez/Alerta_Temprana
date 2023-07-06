@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Formulario from './componentes/Formulario';
+import Form_Login from './componentes/Login';
 
 
 export default function App() {
   return (
     <><View style={styles.container}>
-      <Formulario></Formulario>
+      <Form_Login></Form_Login>
     </View>
     </>
 );
