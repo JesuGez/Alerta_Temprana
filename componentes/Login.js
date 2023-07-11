@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Image, FlatList } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import server from '../server';
 
 const Form_Login = () => {
 
   const server = 'http://192.168.3.11:8000/';
 
   const validationSchema = Yup.object().shape({
-    usuario: Yup.string().required('El usuario es obligatorio'),
+    username: Yup.string().required('El usuario es obligatorio'),
     password: Yup.string().required('La contraseña es requerida')
   });
 
@@ -16,17 +17,33 @@ const Form_Login = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (values) => {
+    console.log(values)
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify(values);
     
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch(server + "login", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
   };
   return (
     <Formik
-      initialValues={{ usuario: '', password: '' }}
+      initialValues={{ username: '', password: '' }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <><Image
-          style={{ width: '50%', height: '35%', marginTop: 30}}
+          style={{ width: '50%', height: '35%', marginTop: 30 }}
           source={require('../assets/logo_oagrd.png')}>
         </Image>
           <View style={styles.container}>
@@ -34,11 +51,11 @@ const Form_Login = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Usuario"
-                onChangeText={handleChange('usuario')}
-                onBlur={handleBlur('usuario')}
-                value={values.usuario}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                value={values.username}
               />
-              {touched.usuario && errors.usuario && <Text>{errors.usuario}</Text>}
+              {touched.username && errors.username && <Text>{errors.username}</Text>}
               <TextInput
                 style={styles.input}
                 placeholder="Contraseña"
@@ -46,11 +63,10 @@ const Form_Login = () => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
-                keyboardType="password"
               />
               {touched.password && errors.password && <Text>{errors.password}</Text>}
             </View>
-            <Button title="Acceder" onPress={handleSubmit} type="submit" />
+            <Button title="Acceder" onPress={handleSubmit} type="submit"/>
           </View>
         </>
       )}
