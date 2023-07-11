@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import server from '../server';
 
-const Form_Login = () => {
+const Form_Login = ({ onLogin }) => {
 
   const server = 'http://192.168.3.11:8000/';
 
@@ -12,9 +12,6 @@ const Form_Login = () => {
     username: Yup.string().required('El usuario es obligatorio'),
     password: Yup.string().required('La contraseña es requerida')
   });
-
-  const [usuario, setUsuario] = useState('');
-  const [password, setPassword] = useState('');
 
   const handleSubmit = async (values) => {
     var myHeaders = new Headers();
@@ -30,9 +27,21 @@ const Form_Login = () => {
     };
 
     fetch(server + "login", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+    .then(response => {
+      if (response.status === 401) {
+        throw new Error('Contraseña incorrecta');
+      } else if (response.status === 404) {
+        throw new Error('Usuario no encontrado');
+      }
+      return response.json();
+    })
+    .then(result => {
+      console.log(result);
+      onLogin();
+    })
+    .catch(error => {
+      console.log(error.message);
+    });
   };
   return (
     <Formik
