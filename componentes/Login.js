@@ -17,7 +17,6 @@ const Form_Login = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (values) => {
-    console.log(values)
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
