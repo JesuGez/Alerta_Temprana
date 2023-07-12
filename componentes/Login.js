@@ -13,6 +13,8 @@ const Form_Login = ({ onLogin }) => {
     password: Yup.string().required('La contraseña es requerida')
   });
 
+  const [error, setError] = useState('');
+
   const handleSubmit = async (values) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -28,17 +30,18 @@ const Form_Login = ({ onLogin }) => {
 
     fetch(server + "login", requestOptions)
     .then(response => {
-      if (response.status === 401) {
-        throw new Error('Contraseña incorrecta');
-      } else if (response.status === 404) {
-        throw new Error('Usuario no encontrado');
-      }
-      return response.json();
-    })
-    .then(result => {
-      console.log(result);
-      onLogin();
-    })
+        if (response.status === 401 || response.status === 404) {
+          return response.json().then(data => {
+            setError(data.error);
+            throw new Error('Error de autenticación');
+          });
+        }
+        return response.json();
+      })
+      .then(result => {
+        console.log(result);
+        onLogin();
+      })
     .catch(error => {
       console.log(error.message);
     });
@@ -76,6 +79,8 @@ const Form_Login = ({ onLogin }) => {
             </View>
             <Button title="Acceder" onPress={handleSubmit} type="submit"/>
           </View>
+       {error ? <Text style={styles.errorBadge}>{error}</Text> : null}
+
         </>
       )}
     </Formik>
@@ -96,6 +101,14 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
+  },
+  errorBadge: {
+    backgroundColor: 'red',
+    color: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginTop: 10
   }
 });
 
